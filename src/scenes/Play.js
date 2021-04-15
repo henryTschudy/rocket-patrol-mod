@@ -4,34 +4,41 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('starfield', 'assets/starfield.png');
+        this.load.image('placeHolderBG', 'assets/placeHolderBG.png');
+        this.load.image('bubble1', 'assets/bubbleParalax1.png');
+        this.load.image('bubble2', 'assets/bubbleParalax2.png');
         this.load.image('octoHead', 'assets/octoHead.png');
         this.load.image('octoHeadSad', 'assets/octoHeadSad.png');
         this.load.image('octoHeadHappy', 'assets/octoHeadHappy.png');
         this.load.image('octoArm', 'assets/armSegment.png');
         this.load.image('handOpen', 'assets/handOpen.png');
         this.load.image('handClosed', 'assets/handClosed.png');
-        this.load.image('handSub', 'assets/handSub.png')
+        this.load.image('handSub', 'assets/handSub.png');
+        this.load.image('handSubFlipped', 'assets/handSubFlipped.png');
         this.load.image('submarine', 'assets/sub.png');
         this.load.spritesheet('explosion', 'assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
     }
 
     create() {
         this.add.text("Rocket Control Play");
-        this.starfield = this.add.tileSprite(0,0,640,480, 'starfield').setOrigin(0,0);
-        this.starfield.setDepth(-2)
+        this.background = this.add.tileSprite(0,0,640,480, 'placeHolderBG').setOrigin(0,0);
+        this.bubble2 = this.add.tileSprite(0,0,640,480, 'bubble2').setOrigin(0,0);
+        this.bubble2.setDepth(-2);
+        this.background.setDepth(-2);
 
         // Add rocket (p1)
         this.octoHand = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding,'handOpen');
-        this.octoHead = new Trailer(this, 0, 0,'octoHead', 0, this.octoHand, this.octoHand.width*3, -(this.octoHand.height-borderPadding), false).setDepth(-1);
+        this.octoHead = new Trailer(this, this.octoHand.x, this.octoHand.y,'octoHead', 0, this.octoHand, this.octoHand.width*3, -(this.octoHand.height-borderPadding), false, true).setDepth(-1);
         this.octoArm = new Trailer(this, 0, 0, 'octoArm', 0, this.octoHand, 0, 0, true);
         this.octoArm.offsetY = (this.octoArm.height + this.octoHand.height) / 2;
-        this.octoArm.offsetX = this.octoArm.width/10;
+        this.octoArm.offsetX = this.octoArm.width/6;
 
         // Add 3 ships
-        this.ship1 = new Ship(this, game.config.width + borderUISize*6, borderUISize*4, 'submarine', 0, 30).setOrigin(0, 0);
-        this.ship2 = new Ship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'submarine', 0, 20).setOrigin(0,0);
-        this.ship3 = new Ship(this, game.config.width, borderUISize*6 + borderPadding*4, 'submarine', 0, 10).setOrigin(0,0);
+        this.ship1 = new Ship(this, borderUISize*6, borderUISize*4, 'submarine', 0, 30).setOrigin(0, 0);
+        this.ship2 = new Ship(this, borderUISize*3, borderUISize*5 + borderPadding*2, 'submarine', 0, 20, 'left').setOrigin(0,0);
+        this.ship3 = new Ship(this, borderUISize, borderUISize*6 + borderPadding*4, 'submarine', 0, 10).setOrigin(0,0);
+
+        this.bubble1 = this.add.tileSprite(0,0,640,480, 'bubble1').setOrigin(0,0);
 
         // green UI background
         this.add.rectangle(0,borderUISize + borderPadding,game.config.width,borderUISize * 2,0x00FF00,).setOrigin(0,0);
@@ -91,7 +98,8 @@ class Play extends Phaser.Scene {
             this.scene.start("menuScene");
         }
 
-        this.starfield.tilePositionX -= 4;
+        this.bubble1.tilePositionY += 2;
+        this.bubble2.tilePositionY += 0.25;
         if (!this.gameOver) {               
             this.octoHand.update();         // update rocket sprite
             this.octoHead.update();
@@ -132,7 +140,11 @@ class Play extends Phaser.Scene {
         // temporarily hide ship
         ship.alpha = 0;
         this.cameras.main.shake(100, 0.03);
-        this.octoHand.currentGrab = 'handSub';
+        if (ship.flipX){
+            this.octoHand.currentGrab = 'handSubFlipped';
+        } else {
+            this.octoHand.currentGrab = 'handSub';
+        }
         // create explosion sprite at ship's position
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');             // play explode animation
