@@ -122,14 +122,21 @@ class Play extends Phaser.Scene {
             this.shipExplode(this.ship3);
         };
 
+        if(this.octoHand.y < borderUISize*3){
+            this.octoHead.setTexture('octoHeadSad');
+        }
+        if(this.octoHand.y == game.config.height-borderUISize-borderPadding) {
+            this.octoHead.setTexture('octoHead');
+        }
+
     }
 
-    checkCollision(rocket, ship) {
-        if (rocket.x < ship.x + ship.width && 
-            rocket.x + rocket.width > ship.x && 
-            rocket.y < ship.y + ship.height &&
-            rocket.height + rocket.y > ship. y &&
-            rocket.canGrab) {
+    checkCollision(hand, ship) {
+        if (hand.x < ship.x + ship.width && 
+            hand.x + hand.width > ship.x && 
+            hand.y < ship.y + ship.height &&
+            hand.height + hand.y > ship. y &&
+            hand.canGrab) {
                 return true;
         } else {
             return false;
@@ -140,6 +147,7 @@ class Play extends Phaser.Scene {
         // temporarily hide ship
         ship.alpha = 0;
         this.cameras.main.shake(100, 0.03);
+        this.octoHead.setTexture('octoHeadHappy');
         if (ship.flipX){
             this.octoHand.currentGrab = 'handSubFlipped';
         } else {
