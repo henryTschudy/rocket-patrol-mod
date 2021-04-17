@@ -7,13 +7,16 @@ class Rocket extends Phaser.GameObjects.Sprite {
         this.isFiring = false;
         this.canGrab = false;
         this.currentGrab = 'handClosed';
-        this.sfxRocket = scene.sound.add('sfx_rocket'); // add rocket sfx
+        this.sfxArm = scene.sound.add('sfx_armWave'); // add rocket sfx
+        this.sfxMiss = scene.sound.add('sfx_miss');
+        this.sfxReload = scene.sound.add('sfx_reload');
     }
 
     update() {
         if(this.isFiring && !this.isReturning) {
             this.y -= this.movementSpeed*2;
             if(this.y < borderUISize*3) {
+                this.sfxMiss.play();
                 this.reset();
             }
         }
@@ -21,6 +24,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
             this.setTexture(this.currentGrab);
             this.y += this.movementSpeed;
             if(this.y == game.config.height-borderUISize-borderPadding) {
+                this.sfxReload.play();
                 this.isReturning = false;
                 this.isFiring = false;
                 this.setTexture('handOpen');
@@ -38,7 +42,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
             if (Phaser.Input.Keyboard.JustDown(keyF) && !this.isFiring) {
                 this.isFiring = true;
                 this.canGrab = true;
-                this.sfxRocket.play();  // play sfx
+                this.sfxArm.play();  // play sfx
             }
     
             this.x = Phaser.Math.Clamp(
