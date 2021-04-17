@@ -88,6 +88,7 @@ class Play extends Phaser.Scene {
         } else {
             this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*15, borderUISize + borderPadding*2, game.highScore, scoreConfig);
         }
+        this.timerText = this.add.text(game.config.width - borderPadding - borderUISize - scoreConfig.fixedWidth, borderUISize + borderPadding*2, game.highScore, scoreConfig);
 
         // GAME OVER flag
         this.gameOver = false;
@@ -102,14 +103,13 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        this.timerText.text = (game.settings.gameTimer/1000 - this.clock.getElapsedSeconds().toString().substr(0, 2));
         if (game.settings.gameMode == 'hard'){
-            console.log('hard!')
             this.scoreLeftHigh.text = game.hardHighScore;
             if (!this.gameOver && this.p1Score > game.hardHighScore) {
                 game.hardHighScore = this.p1Score;
             }
         } else {
-            console.log('easy!')
             this.scoreLeftHigh.text = game.highScore;
             if (!this.gameOver && this.p1Score > game.highScore) {
                 game.highScore = this.p1Score;
