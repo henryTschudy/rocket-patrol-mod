@@ -12,6 +12,7 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_armWave', './assets/armWave.wav');
         this.load.audio('sfx_miss', './assets/miss.wav');
         this.load.audio('sfx_reload', './assets/reload.wav');
+        this.load.audio('sfx_move', './assets/move.wav');
       }
 
     create() {
