@@ -2,7 +2,7 @@ class Menu extends Phaser.Scene {
     constructor() {
         super("menuScene");
         game.highScore = 0;
-        console.log(game.highScore);
+        game.hardHighScore = 0;
     }
 
     preload() {
@@ -42,8 +42,9 @@ class Menu extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
           // easy mode
           game.settings = {
+            gameMode: 'easy',
             shipSpeed: 3,
-            gameTimer: 60000    
+            gameTimer: 6000    
           }
           this.sound.play('sfx_select');
           this.scene.start('playScene');    
@@ -51,8 +52,9 @@ class Menu extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
           // hard mode
           game.settings = {
+            gameMode: 'hard',
             shipSpeed: 4,
-            gameTimer: 45000    
+            gameTimer: 4500    
           }
           this.sound.play('sfx_select');
           this.scene.start('playScene');    

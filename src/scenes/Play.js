@@ -20,9 +20,11 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-        console.log(game.config.highScore);
-        this.highScore = game.config.highScore;
-        console.log(this.highScore);
+        if (game.settings.gameMode == 'hard'){
+            this.highScore = game.hardHighScore;
+        } else {
+            this.highsScore = game.highScore
+        }
 
         this.add.text("Rocket Control Play");
         this.background = this.add.tileSprite(0,0,640,480, 'placeHolderBG').setOrigin(0,0);
@@ -81,7 +83,11 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
-        this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*15, borderUISize + borderPadding*2, game.highScore, scoreConfig);
+        if (game.settings.gameMode == 'hard'){
+            this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*15, borderUISize + borderPadding*2, game.hardHighScore, scoreConfig);
+        } else {
+            this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*15, borderUISize + borderPadding*2, game.highScore, scoreConfig);
+        }
 
         // GAME OVER flag
         this.gameOver = false;
@@ -96,9 +102,18 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        this.scoreLeftHigh.text = game.highScore;
-        if (!this.gameOver && this.p1Score > game.highScore) {
-            game.highScore = this.p1Score;
+        if (game.settings.gameMode == 'hard'){
+            console.log('hard!')
+            this.scoreLeftHigh.text = game.hardHighScore;
+            if (!this.gameOver && this.p1Score > game.hardHighScore) {
+                game.hardHighScore = this.p1Score;
+            }
+        } else {
+            console.log('easy!')
+            this.scoreLeftHigh.text = game.highScore;
+            if (!this.gameOver && this.p1Score > game.highScore) {
+                game.highScore = this.p1Score;
+            }
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
