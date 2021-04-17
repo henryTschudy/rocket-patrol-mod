@@ -1,6 +1,8 @@
 class Menu extends Phaser.Scene {
     constructor() {
         super("menuScene");
+        game.highScore = 0;
+        console.log(game.highScore);
     }
 
     preload() {
@@ -34,7 +36,6 @@ class Menu extends Phaser.Scene {
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-
     }
 
     update() {

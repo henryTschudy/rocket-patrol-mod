@@ -20,6 +20,10 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        console.log(game.config.highScore);
+        this.highScore = game.config.highScore;
+        console.log(this.highScore);
+
         this.add.text("Rocket Control Play");
         this.background = this.add.tileSprite(0,0,640,480, 'placeHolderBG').setOrigin(0,0);
         this.bubble2 = this.add.tileSprite(0,0,640,480, 'bubble2').setOrigin(0,0);
@@ -77,6 +81,7 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+        this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*15, borderUISize + borderPadding*2, game.highScore, scoreConfig);
 
         // GAME OVER flag
         this.gameOver = false;
@@ -91,6 +96,10 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        this.scoreLeftHigh.text = game.highScore;
+        if (!this.gameOver && this.p1Score > game.highScore) {
+            game.highScore = this.p1Score;
+        }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
         }
