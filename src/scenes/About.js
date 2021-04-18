@@ -23,7 +23,7 @@ class About extends Phaser.Scene {
             fixedWidth: 0
         }
         this.aboutText = this.add.text(game.config.width/2, game.config.height/5, 'You are a kraken trying to eat submarines.').setOrigin(0.5);
-        this.aboutText = this.add.text(game.config.width/2, game.config.height/5 + borderUISize, 'The farther away a submarine the more points it is worth.').setOrigin(0.5);
+        this.aboutText = this.add.text(game.config.width/2, game.config.height/5 + borderUISize, "The farther away a submarine is the more points it's worth.").setOrigin(0.5);
         this.aboutText = this.add.text(game.config.width/2, game.config.height/5 + borderUISize*2, 'Eating a submarine grants you bonus time.').setOrigin(0.5);
         this.aboutText = this.add.text(game.config.width/2, game.config.height/5 + borderUISize*3, 'Press [esc] to exit to the menu at any time.').setOrigin(0.5);
         this.aboutText = this.add.text(game.config.width/2, game.config.height/5 + borderUISize*5, 'Music, sound, and assets by Henry Tschudy').setOrigin(0.5);

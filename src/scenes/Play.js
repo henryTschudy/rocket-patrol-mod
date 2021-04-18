@@ -41,9 +41,10 @@ class Play extends Phaser.Scene {
         this.octoArm.offsetX = this.octoArm.width/6;
 
         // Add 3 ships
-        this.ship1 = new Ship(this, borderUISize*6, borderUISize*4, 'submarine', 0, 30).setOrigin(0, 0);
-        this.ship2 = new Ship(this, borderUISize*3, borderUISize*5 + borderPadding*2, 'submarine', 0, 20, 'left').setOrigin(0,0);
-        this.ship3 = new Ship(this, borderUISize, borderUISize*6 + borderPadding*4, 'submarine', 0, 10).setOrigin(0,0);
+        console.log(Phaser.Math.RND.pick(['left', 'right']));
+        this.ship1 = new Ship(this, borderUISize*6, borderUISize*4, 'submarine', 0, 30, Phaser.Math.RND.pick('left', 'right')).setOrigin(0, 0);
+        this.ship2 = new Ship(this, borderUISize*3, borderUISize*5 + borderPadding*2, 'submarine', 0, 20, Phaser.Math.RND.pick(['left', 'right'])).setOrigin(0,0);
+        this.ship3 = new Ship(this, borderUISize, borderUISize*6 + borderPadding*4, 'submarine', 0, 10, Phaser.Math.RND.pick(['left', 'right'])).setOrigin(0,0);
 
         this.bubble1 = this.add.tileSprite(0,0,640,480, 'bubble1').setOrigin(0,0);
 
@@ -105,7 +106,6 @@ class Play extends Phaser.Scene {
 
         // 30-sec timer. Seperate from the play clock since that can change from bonus time.
         this.clockCounter = this.time.delayedCall(game.settings.gameTimer/2, () => {
-            console.log('Ship boost enabled!')
             game.settings.shipSpeed = game.settings.shipSpeed * 1.5;
         }, null, this);
     }
@@ -130,6 +130,7 @@ class Play extends Phaser.Scene {
             this.scene.start("menuScene");
         }
         if (Phaser.Input.Keyboard.JustDown(keyESC)) {
+            this.game.sound.stopAll();
             this.sound.play('sfx_select');
             this.scene.start("menuScene");
         }
@@ -199,6 +200,7 @@ class Play extends Phaser.Scene {
         });
         // score add and repaint
         this.p1Score += ship.points;
+        game.settings.gameTimer += ship.points*100
         this.scoreLeft.text = 'score:' + this.p1Score;
         this.sound.play('sfx_explosion');        
       }
