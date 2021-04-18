@@ -26,7 +26,8 @@ class Play extends Phaser.Scene {
             this.highsScore = game.highScore
         }
 
-        this.add.text("Rocket Control Play");
+        this.speedBoost = false;
+
         this.background = this.add.tileSprite(0,0,640,480, 'placeHolderBG').setOrigin(0,0);
         this.bubble2 = this.add.tileSprite(0,0,640,480, 'bubble2').setOrigin(0,0);
         this.bubble2.setDepth(-2);
@@ -46,19 +47,20 @@ class Play extends Phaser.Scene {
 
         this.bubble1 = this.add.tileSprite(0,0,640,480, 'bubble1').setOrigin(0,0);
 
-        // green UI background
-        this.add.rectangle(0,borderUISize + borderPadding,game.config.width,borderUISize * 2,0x00FF00,).setOrigin(0,0);
+        // UI background
+        this.add.rectangle(0,borderUISize + borderPadding,game.config.width,borderUISize * 2,0xe16a00,).setOrigin(0,0);
 
         // white borders
-	    this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-	    this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-	    this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
-	    this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
+	    this.add.rectangle(0-borderUISize, 0-borderUISize, game.config.width+borderUISize*2, borderUISize*2, 0x042263).setOrigin(0 ,0);
+	    this.add.rectangle(0-borderUISize, game.config.height - borderUISize, game.config.width+borderUISize*2, borderUISize*2, 0x042263).setOrigin(0 ,0);
+	    this.add.rectangle(0-borderUISize, 0-borderUISize, borderUISize*2, game.config.height, 0x042263).setOrigin(0 ,0);
+	    this.add.rectangle(game.config.width - borderUISize, 0, borderUISize*2, game.config.height, 0x042263).setOrigin(0 ,0);
 
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         
         this.anims.create({
             key: 'explode',
@@ -73,18 +75,18 @@ class Play extends Phaser.Scene {
         let scoreConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
-            align: 'right',
+            backgroundColor: '#f9943b',
+            color: '#000000',
+            align: 'left',
             padding: {
             top: 5,
             bottom: 5,
             },
-            fixedWidth: 100
+            fixedWidth: 160
         }
-        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, 'score:' + this.p1Score, scoreConfig);
         if (game.settings.gameMode == 'hard'){
-            this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*15, borderUISize + borderPadding*2, game.hardHighScore, scoreConfig);
+            this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*2 + scoreConfig.fixedWidth, borderUISize + borderPadding*2, game.hardHighScore, scoreConfig);
         } else {
             this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*15, borderUISize + borderPadding*2, game.highScore, scoreConfig);
         }
@@ -100,17 +102,23 @@ class Play extends Phaser.Scene {
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
+
+        // 30-sec timer. Seperate from the play clock since that can change from bonus time.
+        this.clockCounter = this.time.delayedCall(game.settings.gameTimer/2, () => {
+            console.log('Ship boost enabled!')
+            game.settings.shipSpeed = game.settings.shipSpeed * 1.5;
+        }, null, this);
     }
 
     update() {
-        this.timerText.text = (game.settings.gameTimer/1000 - this.clock.getElapsedSeconds().toString().substr(0, 2));
+        this.timerText.text = 'time:  ' + (game.settings.gameTimer/1000 - this.clock.getElapsedSeconds().toString().substr(0, 2));
         if (game.settings.gameMode == 'hard'){
-            this.scoreLeftHigh.text = game.hardHighScore;
+            this.scoreLeftHigh.text = 'best: ' + game.hardHighScore;
             if (!this.gameOver && this.p1Score > game.hardHighScore) {
                 game.hardHighScore = this.p1Score;
             }
         } else {
-            this.scoreLeftHigh.text = game.highScore;
+            this.scoreLeftHigh.text = 'best: ' + game.highScore;
             if (!this.gameOver && this.p1Score > game.highScore) {
                 game.highScore = this.p1Score;
             }
@@ -119,6 +127,10 @@ class Play extends Phaser.Scene {
             this.scene.restart();
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.scene.start("menuScene");
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyESC)) {
+            this.sound.play('sfx_select');
             this.scene.start("menuScene");
         }
 
@@ -187,7 +199,7 @@ class Play extends Phaser.Scene {
         });
         // score add and repaint
         this.p1Score += ship.points;
-        this.scoreLeft.text = this.p1Score;
+        this.scoreLeft.text = 'score:' + this.p1Score;
         this.sound.play('sfx_explosion');        
       }
 }

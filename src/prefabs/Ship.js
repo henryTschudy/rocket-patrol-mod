@@ -13,6 +13,7 @@ class Ship extends Phaser.GameObjects.Sprite {
     }
 
     update() {
+        this.moveSpeed = game.settings.shipSpeed;
         if (this.direction == 'left'){
             this.x -= this.moveSpeed;
 
