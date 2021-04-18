@@ -169,8 +169,8 @@ class Play extends Phaser.Scene {
     }
 
     checkCollision(hand, ship) {
-        if (hand.x < ship.x + ship.width && 
-            hand.x + hand.width > ship.x && 
+        if (hand.x + (hand.width/4) < ship.x + ship.width && 
+            hand.x + hand.width-(hand.width/4) > ship.x && 
             hand.y < ship.y + ship.height &&
             hand.height + hand.y > ship. y &&
             hand.canGrab) {
