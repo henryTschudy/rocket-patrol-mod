@@ -16,6 +16,7 @@ class Play extends Phaser.Scene {
         this.load.image('handSub', 'assets/handSub.png');
         this.load.image('handSubFlipped', 'assets/handSubFlipped.png');
         this.load.image('submarine', 'assets/sub.png');
+        this.load.image('bubble', 'assets/bubbleBig.png');
         this.load.spritesheet('explosion', 'assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
     }
 
@@ -41,8 +42,7 @@ class Play extends Phaser.Scene {
         this.octoArm.offsetX = this.octoArm.width/6;
 
         // Add 3 ships
-        console.log(Phaser.Math.RND.pick(['left', 'right']));
-        this.ship1 = new Ship(this, borderUISize*6, borderUISize*4, 'submarine', 0, 30, Phaser.Math.RND.pick('left', 'right')).setOrigin(0, 0);
+        this.ship1 = new Ship(this, borderUISize*6, borderUISize*4, 'submarine', 0, 30, Phaser.Math.RND.pick(['left', 'right'])).setOrigin(0, 0);
         this.ship2 = new Ship(this, borderUISize*3, borderUISize*5 + borderPadding*2, 'submarine', 0, 20, Phaser.Math.RND.pick(['left', 'right'])).setOrigin(0,0);
         this.ship3 = new Ship(this, borderUISize, borderUISize*6 + borderPadding*4, 'submarine', 0, 10, Phaser.Math.RND.pick(['left', 'right'])).setOrigin(0,0);
 
@@ -192,11 +192,17 @@ class Play extends Phaser.Scene {
         }
         // create explosion sprite at ship's position
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
+        let bubbleManager = this.add.particles('bubble');
+        let bubbles = bubbleManager.createEmitter();
         boom.anims.play('explode');             // play explode animation
+        bubbles.setPosition(ship.x, ship.y);
+        bubbles.setSpeed(200);
+        bubbles.maxParticles = 6;
         boom.on('animationcomplete', () => {    // callback after anim completes
           ship.reset();                         // reset ship position
           ship.alpha = 1;                       // make ship visible again
           boom.destroy();                       // remove explosion sprite
+          bubbleManager.destroy();
         });
         // score add and repaint
         this.p1Score += ship.points;
