@@ -197,7 +197,7 @@ class Play extends Phaser.Scene {
         boom.anims.play('explode');             // play explode animation
         bubbles.setPosition(ship.x, ship.y);
         bubbles.setSpeed(200);
-        bubbles.maxParticles = 6;
+        bubbles.maxParticles = 10;
         boom.on('animationcomplete', () => {    // callback after anim completes
           ship.reset();                         // reset ship position
           ship.alpha = 1;                       // make ship visible again
@@ -206,7 +206,7 @@ class Play extends Phaser.Scene {
         });
         // score add and repaint
         this.p1Score += ship.points;
-        game.settings.gameTimer += ship.points*100
+        this.clock.elapsed -= ship.points*100;
         this.scoreLeft.text = 'score:' + this.p1Score;
         this.sound.play('sfx_explosion');        
       }
