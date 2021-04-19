@@ -4,9 +4,14 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('placeHolderBG', 'assets/placeHolderBG.png');
-        this.load.image('bubble1', 'assets/bubbleParalax1.png');
-        this.load.image('bubble2', 'assets/bubbleParalax2.png');
+        this.load.image('PBG1', 'assets/PBG1.png');
+        this.load.image('PBG2', 'assets/PBG2.png');
+        this.load.image('PBG3', 'assets/PBG3.png');
+        this.load.image('PBG4', 'assets/PBG4.png');
+        this.load.image('PBG5', 'assets/PBG5.png');
+        this.load.image('PBG6', 'assets/PBG6.png');
+        this.load.image('bubble1', 'assets/bubbleParallax1.png');
+        this.load.image('bubble2', 'assets/bubbleParallax2.png');
         this.load.image('octoHead', 'assets/octoHead.png');
         this.load.image('octoHeadSad', 'assets/octoHeadSad.png');
         this.load.image('octoHeadHappy', 'assets/octoHeadHappy.png');
@@ -21,6 +26,10 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        this.music = this.sound.add('music_bg');
+        this.music.loop = true;
+        this.music.play();
+
         if (game.settings.gameMode == 'hard'){
             this.highScore = game.hardHighScore;
         } else {
@@ -29,10 +38,13 @@ class Play extends Phaser.Scene {
 
         this.speedBoost = false;
 
-        this.background = this.add.tileSprite(0,0,640,480, 'placeHolderBG').setOrigin(0,0);
-        this.bubble2 = this.add.tileSprite(0,0,640,480, 'bubble2').setOrigin(0,0);
-        this.bubble2.setDepth(-2);
-        this.background.setDepth(-2);
+        this.background = this.add.tileSprite(0,0,640,480, 'PBG5', 0).setOrigin(0,0).setDepth(-2);
+        this.parallax1 = this.add.tileSprite(0,0,640,480, 'PBG4', 0).setOrigin(0,0).setDepth(-2);
+        this.parallax2 = this.add.tileSprite(0,0,640,480, 'PBG3', 0).setOrigin(0,0).setDepth(-2);
+        this.parallax3 = this.add.tileSprite(0,0,640,480, 'PBG2', 0).setOrigin(0,0).setDepth(-2);
+        this.parallax4 = this.add.tileSprite(0,0,640,480, 'PBG1', 0).setOrigin(0,0).setDepth(-2);
+        this.bubble2 = this.add.tileSprite(0,0,640,480, 'bubble2').setOrigin(0,0).setDepth(-2);
+        this.parallax5 = this.add.tileSprite(0,-10,640,480, 'PBG6', 0).setOrigin(0,0).setDepth(1);
 
         // Add rocket (p1)
         this.octoHand = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding,'handOpen');
@@ -49,13 +61,13 @@ class Play extends Phaser.Scene {
         this.bubble1 = this.add.tileSprite(0,0,640,480, 'bubble1').setOrigin(0,0);
 
         // UI background
-        this.add.rectangle(0,borderUISize + borderPadding,game.config.width,borderUISize * 2,0xe16a00,).setOrigin(0,0);
+        this.add.rectangle(0,borderUISize + borderPadding,game.config.width,borderUISize * 2,0xe16a00,).setOrigin(0,0).setDepth(2);
 
         // white borders
-	    this.add.rectangle(0-borderUISize, 0-borderUISize, game.config.width+borderUISize*2, borderUISize*2, 0x042263).setOrigin(0 ,0);
-	    this.add.rectangle(0-borderUISize, game.config.height - borderUISize, game.config.width+borderUISize*2, borderUISize*2, 0x042263).setOrigin(0 ,0);
-	    this.add.rectangle(0-borderUISize, 0-borderUISize, borderUISize*2, game.config.height, 0x042263).setOrigin(0 ,0);
-	    this.add.rectangle(game.config.width - borderUISize, 0, borderUISize*2, game.config.height, 0x042263).setOrigin(0 ,0);
+	    this.add.rectangle(0-borderUISize, 0-borderUISize, game.config.width+borderUISize*2, borderUISize*2, 0x042263).setOrigin(0 ,0).setDepth(2);
+	    this.add.rectangle(0-borderUISize, game.config.height - borderUISize, game.config.width+borderUISize*2, borderUISize*2, 0x042263).setOrigin(0 ,0).setDepth(2);
+	    this.add.rectangle(0-borderUISize, 0-borderUISize, borderUISize*2, game.config.height, 0x042263).setOrigin(0 ,0).setDepth(2);
+	    this.add.rectangle(game.config.width - borderUISize, 0, borderUISize*2, game.config.height, 0x042263).setOrigin(0 ,0).setDepth(2);
 
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -85,13 +97,13 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 160
         }
-        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, 'score:' + this.p1Score, scoreConfig);
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, 'score:' + this.p1Score, scoreConfig).setDepth(2);
         if (game.settings.gameMode == 'hard'){
-            this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*2 + scoreConfig.fixedWidth, borderUISize + borderPadding*2, game.hardHighScore, scoreConfig);
+            this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*2 + scoreConfig.fixedWidth, borderUISize + borderPadding*2, game.hardHighScore, scoreConfig).setDepth(2);
         } else {
-            this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*15, borderUISize + borderPadding*2, game.highScore, scoreConfig);
+            this.scoreLeftHigh = this.add.text(borderUISize + borderPadding*15, borderUISize + borderPadding*2, game.highScore, scoreConfig).setDepth(2);
         }
-        this.timerText = this.add.text(game.config.width - borderPadding - borderUISize - scoreConfig.fixedWidth, borderUISize + borderPadding*2, game.highScore, scoreConfig);
+        this.timerText = this.add.text(game.config.width - borderPadding - borderUISize - scoreConfig.fixedWidth, borderUISize + borderPadding*2, game.highScore, scoreConfig).setDepth(2);
 
         // GAME OVER flag
         this.gameOver = false;
@@ -123,13 +135,19 @@ class Play extends Phaser.Scene {
                 game.highScore = this.p1Score;
             }
         }
+        if (this.gameOver && this.music.volume > 0) {
+                this.music.volume -= 0.01;
+        }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+            this.music.stop();
             this.scene.restart();
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.music.stop();
             this.scene.start("menuScene");
         }
         if (Phaser.Input.Keyboard.JustDown(keyESC)) {
+            music.stop();
             this.game.sound.stopAll();
             this.sound.play('sfx_select');
             this.scene.start("menuScene");
@@ -137,6 +155,14 @@ class Play extends Phaser.Scene {
 
         this.bubble1.tilePositionY += 2;
         this.bubble2.tilePositionY += 0.25;
+
+        this.background.tilePositionX = this.octoHead.x/10
+        this.parallax1.tilePositionX = this.octoHead.x/8
+        this.parallax2.tilePositionX = this.octoHead.x/6
+        this.parallax3.tilePositionX = this.octoHead.x/4
+        this.parallax4.tilePositionX = this.octoHead.x/2
+        this.parallax5.tilePositionX = this.octoHead.x/0.5
+
         if (!this.gameOver) {               
             this.octoHand.update();         // update rocket sprite
             this.octoHead.update();

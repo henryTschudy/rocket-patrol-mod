@@ -13,7 +13,8 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_miss', './assets/miss.wav');
         this.load.audio('sfx_reload', './assets/reload.wav');
         this.load.audio('sfx_move', './assets/move.wav');
-        this.load.image('background', './assets/background.png')
+        this.load.image('background', './assets/background.png');
+        this.load.audio('music_bg', './assets/krakenPatrolMusic.wav');
     }
 
     create() {
