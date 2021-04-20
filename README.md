@@ -22,4 +22,4 @@ Use Phaser's particle emitter to create a particle explosion when the rocket hit
     Added a bubble explosion that triggers on sub death.
 
 Redesign the game's artwork, UI, and sound to change its theme/aesthetic (to something other than sci-fi) (60)
-    Redesigned to be underwater themed.****
+    Redesigned to be underwater themed.
